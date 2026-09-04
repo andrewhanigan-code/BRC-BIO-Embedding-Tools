@@ -6,27 +6,27 @@ import numpy as np
 from sklearn.metrics import adjusted_rand_score
 from sklearn.cluster import AgglomerativeClustering, KMeans
 
-tf_model_name = '/home/andrewhanigan/Desktop/repo_push/BRC-BIO/Embedding Models/TEST-BRC-BIO_Plastral-Pattern_Seg_RESNET101-BACKBONE_05-14-26_batchsize-8_epochs-14.keras'
+tf_model_name = 'Models/ConvolutionalAutoencoder.keras'
 autoencoder = tf.keras.models.load_model(tf_model_name)
 autoencoder.summary()
 
 #Since we trained our model as a full autoencoder, we can access the individual layer's ouptut like below
 #This way we have the seperate encoder and decoder aspect of the model
 encoder_input = autoencoder.input
-encoder_output = autoencoder.get_layer('conv5_block3_out').output #Segmentation model currently uses max_pooling2d_4, ConvAE model uses conv2d_4, FCAE uses dense_3, resnet seg model uses conv5_block3_out
+encoder_output = autoencoder.get_layer('conv2d_4').output #Segmentation model currently uses max_pooling2d_4, ConvAE model uses conv2d_4, FCAE uses dense_3, resnet seg model uses conv5_block3_out
 encoder_model = tf.keras.Model(encoder_input, encoder_output)
 encoder_model.trainable = False
 encoder_model.summary()
 #BRC-BIO_Shell-And-Pattern_Seg_RESNET101-BACKBONE_05-14-26_batchsize-8_epochs-14.keras
 
 #The n value here is the number of groups or clusters that Kmeans or the Agglomerative algorithms should find
-n = 30
+n = 2
 
 img_width = 64
 img_height = 128
 color_channel = 3
 
-directory_to_test = "/home/andrewhanigan/Desktop/turtle_work/512x512 Turtle Images/August 24 Set/seg network/Test_Morgan/NORMALIZED/0"
+directory_to_test = "Images/Combined/0"
 
 def load_images_and_create_embeddings(directory):
     embeddings = []
